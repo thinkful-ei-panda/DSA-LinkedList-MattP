@@ -21,14 +21,10 @@ class DoubleLinkedList {
 			newNode.next = this.head;
 			this.head.prev = newNode;
 			this.head = newNode;
-			// this.head = newNode;
-			// newNode.next = this.tail;
-			// newNode.previous = this.head;
 		}
 		this.length++;
 	}
 	insertLast(item) {
-		// this.head === null && this.insertFirst(item);
 		const newNode = new _Node(item);
 		if (!this.length) {
 			this.head = newNode;
