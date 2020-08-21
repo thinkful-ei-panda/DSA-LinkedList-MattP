@@ -244,14 +244,17 @@ Add Tauron to the list
 Remove Picon from the list
  */
 const doubleLL = () => {
-	const DOUBLELL = new DoubleLinkedList();
-	DOUBLELL.insertFirst(`First`);
-	DOUBLELL.insertLast(`Last`);
-	DOUBLELL.insertAt(`Aquaria`, 1);
-	DOUBLELL.insertAfter(`Caprica`, `Aquaria`);
-	// DOUBLELL.insertBefore(`Gemenon`, `Aquaria`);
-	// console.log(DOUBLELL.find(`First`));
-	return DOUBLELL;
+	const DLL = new DoubleLinkedList();
+	DLL.insertAt(`Aquaria`, 0);
+	DLL.insertAfter(`Caprica`, `Aquaria`);
+	DLL.insertAfter(`Gemenon`, `Caprica`);
+	DLL.insertBefore(`Picon`, `Aquaria`);
+	DLL.insertAfter(`Sagittaron`, `Gemenon`);
+	DLL.insertLast(`Tauron`);
+	console.log(DLL.find(`First`));
+	console.log(DLL.find(`Tauron`));
+	DLL.remove(`Picon`);
+	return DLL;
 };
 console.log(' ');
 console.log(doubleLL());

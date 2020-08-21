@@ -14,70 +14,70 @@ class DoubleLinkedList {
 	}
 	insertFirst(item) {
 		const newNode = new _Node(item);
-		if (!this.length) {
+		if (!this.head) {
 			this.head = newNode;
 			this.tail = newNode;
 		} else {
+			newNode.previous = null;
 			newNode.next = this.head;
-			this.head.prev = newNode;
+			this.head.previous = newNode;
 			this.head = newNode;
 		}
+
 		this.length++;
 	}
 	insertLast(item) {
-		const newNode = new _Node(item);
-		if (!this.length) {
-			this.head = newNode;
-			this.tail = newNode;
+		let newNode = new _Node(item);
+
+		if (!this.head) {
+			this.insertFirst(item);
 		} else {
 			this.tail.next = newNode;
 			newNode.previous = this.tail;
 			this.tail = newNode;
 		}
+
 		this.length++;
 	}
 	find(item) {
-		// Start at the head
-		let start = this.head;
-		let end = this.tail;
 		// if current node points to null or empty list
 		!this.length && null;
 
-		if (start.value === item) return start;
-		if (end.value === item) return end;
+		// Start at the head
+		let currNode = this.head;
+		let end = this.tail;
+		if (this.head.value === item) return currNode;
+		if (this.tail.value === item) return end;
 		// Check the 'value' of the node
-		while (start.value !== item) {
+		while (currNode.next !== null) {
 			// return null if null if reaches the end and item not found
-			start.next === end ? null : (start = start.next);
+			if (currNode.value === item) return currNode;
+			currNode = currNode.next;
 		}
-		return start;
+		return `Item Not Found`;
 	}
 	remove(item) {
 		// if the list is empty
-		!this.head
-			? null // if the node to be removed is head, make the head.next head
-			: this.head.value === item && (this.head = this.head.next);
+		!this.head && null;
+
 		let currNode = this.head;
-		// keep track of previous node
-		let prevNode = this.head;
-		while (currNode !== null && currNode.value !== item) {
-			// save the previous node
-			prevNode = currNode;
+		while (currNode.value !== item) {
 			currNode = currNode.next;
 		}
-		if (currNode === null) {
-			console.log(`Item not found`);
+		if (currNode === this.head) {
+			this.head = currNode.next;
+			currNode.next.previous = null;
+		} else if (currNode === this.tail) {
+			currNode.previous.next = null;
+			this.tail = currNode.previous;
 		} else {
-			prevNode.next = currNode.next;
-			prevNode.previous = currNode.previous;
+			currNode.previous.next = currNode.next;
+			currNode.next.previous = currNode.previous;
 		}
 	}
 	insertBefore(item, nodeValue) {
 		// if list is empty
-		!this.length && console.log(`List is empty`);
-
-		// if head contains node value
-		this.head.value === nodeValue && this.insertFirst(item);
+		!this.length && this.insertFirst(item);
 
 		let currNode = this.head;
 		while (currNode.value !== nodeValue && currNode.next !== this.tail) {
@@ -85,11 +85,14 @@ class DoubleLinkedList {
 		}
 		if (currNode.value === nodeValue) {
 			const newNode = new _Node(item);
-			if (currNode.next !== null) {
-				currNode.next.previous = newNode;
+			if (currNode.previous) {
+				currNode.previous.next = newNode;
+				newNode.previous = currNode.previous;
+				newNode.next = currNode;
+				currNode.previous = newNode;
+			} else {
+				this.insertFirst(item);
 			}
-			newNode.next = currNode;
-			currNode.previous = newNode;
 
 			this.length++;
 		} else {
@@ -98,9 +101,7 @@ class DoubleLinkedList {
 	}
 	insertAfter(item, nodeValue) {
 		// if list is empty, nothing to match
-		if (!this.length) {
-			console.log(`List is empty`);
-		}
+		!this.head && this.insertFirst(item);
 
 		let currNode = this.head;
 		while (currNode.value !== nodeValue && currNode !== this.tail) {
@@ -110,47 +111,44 @@ class DoubleLinkedList {
 		// make new node next, current node next
 		if (currNode.value === nodeValue) {
 			const newNode = new _Node(item);
-			newNode.next = currNode.next;
-
-			if (currNode.previous !== null) {
+			if (currNode.next) {
 				currNode.next.previous = newNode;
+				newNode.next = currNode.next;
+				currNode.next = newNode;
+				newNode.previous = currNode;
+			} else {
+				this.insertLast(item);
 			}
-			newNode.previous = currNode;
-
-			currNode.next = newNode;
-			// check if inserted element was at the tail, if yes then make tail point to it
-			if (this.tail.next !== null) {
-				this.tail = this.tail.next;
-			}
+			// // check if inserted element was at the tail, if yes then make tail point to it
+			// if (this.tail.next !== null) {
+			// 	this.tail = this.tail.next;
+			// }
 			this.length++;
-		}
-		// else no where to insert item
+		} // else no where to insert item
 		else {
 			console.log(`Item not found`);
 		}
 	}
 	insertAt(item, position) {
-		!this.head && console.log(`List is empty`);
-
+		!this.length && this.insertFirst(item);
 		// index will start at 1
 		let currPostition = 1;
 		let currNode = this.head;
-		// let prevNode = this.head;
+
 		while (currPostition !== position && currNode.next !== null) {
-			// prevNode = currNode;
 			currNode = currNode.next;
 			currPostition++;
 		}
 		const newNode = new _Node(item);
-		newNode.next = currNode.next;
 
 		if (currNode.next !== null) {
-			currNode.next.previous = newNode;
+			newNode.next = currNode.next;
+			currNode.previous.next = newNode;
+			newNode.previous = currNode.previous;
+			currNode.previous = newNode;
 		}
-		newNode.previous = currNode;
-		currNode.next = newNode;
 
-		// check if inserted element was at the tail, if yes then make tail point to it
+		//check if inserted element was at the tail, if yes then make tail point to it
 		if (this.tail.next !== null) {
 			this.tail = this.tail.next;
 		}
